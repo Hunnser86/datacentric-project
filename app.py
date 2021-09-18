@@ -149,8 +149,21 @@ def delete_task(task_id):
 
 @app.route("/get_categories")
 def get_categories():
-    catagories = list(mongo.db.catagories.find().sort("category_name", 1))   
-    return render_template("categories.html", catagories=catagories) 
+    catagories = list(mongo.db.catagories.find().sort("category_name", 1))
+    return render_template("categories.html", catagories=catagories)
+
+
+@app.route("/add_category", methods=["GET", "POST"])
+def add_category():
+    if request.method == "POST":
+        category = {
+            "category_name": request.form.get("category_name")
+        }
+        mongo.db.catagories.insert_one(category)
+        flash("New Category Added")
+        return redirect(url_for("get_categories"))
+
+    return render_template("add_category.html")
 
 
 if __name__ == "__main__":
